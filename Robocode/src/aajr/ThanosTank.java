@@ -30,16 +30,17 @@ import java.awt.*;
  * @author Pavel Savara (contributor)
  */
 public class ThanosTank extends AdvancedRobot {
-
+    int moveDirection = 10;
     /**
      * PaintingRobot's run method - Seesaw
      */
     public void run() {
         while (true) {
+            turnRadarRightRadians(Double.POSITIVE_INFINITY);
             ahead(100);
-            turnGunRight(360);
             back(100);
-            turnGunRight(360);
+            setAdjustGunForRobotTurn(true);
+            setAdjustRadarForGunTurn(true);
         }
     }
 
@@ -49,8 +50,27 @@ public class ThanosTank extends AdvancedRobot {
     public void onScannedRobot(ScannedRobotEvent e) {
         // demonstrate feature of debugging properties on RobotDialog
         setDebugProperty("lastScannedRobot", e.getName() + " at " + e.getBearing() + " degrees at time " + getTime());
-
-        fire(1);
+        double absBearing=e.getBearingRadians()+getHeadingRadians();//enemies absolute bearing
+        double latVel=e.getVelocity() * Math.sin(e.getHeadingRadians() -absBearing);//enemies later velocity
+        double gunTurnAmt;//amount to turn our gun
+        setTurnRadarLeftRadians(getRadarTurnRemainingRadians());//lock on the radar
+        if(Math.random()>.9){
+            setMaxVelocity((12*Math.random())+12);//randomly change speed
+        }
+        if (e.getDistance() > 150) {//if distance is greater than 150
+            gunTurnAmt = robocode.util.Utils.normalRelativeAngle(absBearing- getGunHeadingRadians()+latVel/22);//amount to turn our gun, lead just a little bit
+            setTurnGunRightRadians(gunTurnAmt); //turn our gun
+            setTurnRightRadians(robocode.util.Utils.normalRelativeAngle(absBearing-getHeadingRadians()+latVel/getVelocity()));//drive towards the enemies predicted future location
+            setAhead((e.getDistance() - 140)*moveDirection);//move forward
+            setFire(3);//fire
+        }
+        else{//if we are close enough...
+            gunTurnAmt = robocode.util.Utils.normalRelativeAngle(absBearing- getGunHeadingRadians()+latVel/15);//amount to turn our gun, lead just a little bit
+            setTurnGunRightRadians(gunTurnAmt);//turn our gun
+            setTurnLeft(-90-e.getBearing()); //turn perpendicular to the enemy
+            setAhead((e.getDistance() - 140)*moveDirection);//move forward
+            setFire(3);//fire
+        }
     }
 
     /**
@@ -74,7 +94,7 @@ public class ThanosTank extends AdvancedRobot {
         g.drawOval((int) (getX() - 59), (int) (getY() - 59), 118, 118);
         g.drawOval((int) (getX() - 60), (int) (getY() - 60), 120, 120);
 
-        turnLeft(90 - e.getBearing());
+
     }
 
     /**
