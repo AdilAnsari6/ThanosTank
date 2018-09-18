@@ -13,6 +13,7 @@ package aajr;
 
 import robocode.AdvancedRobot;
 import robocode.HitByBulletEvent;
+import robocode.HitWallEvent;
 import robocode.ScannedRobotEvent;
 
 import java.awt.*;
@@ -29,24 +30,25 @@ import java.awt.*;
  * @author Stefan Westen (original SGSample)
  * @author Pavel Savara (contributor)
  */
+
 public class ThanosTank extends AdvancedRobot {
     int moveDirection = 10;
+    int dir = 1;
     /**
      * PaintingRobot's run method - Seesaw
      */
     public void run() {
         while (true) {
             turnRadarRightRadians(Double.POSITIVE_INFINITY);
-            ahead(100);
-            back(100);
             setAdjustGunForRobotTurn(true);
             setAdjustRadarForGunTurn(true);
         }
     }
 
-    /**
-     * Fire when we see a robot
-     */
+    public void onHitWall(HitWallEvent e) {
+        dir=-dir;
+    }
+
     public void onScannedRobot(ScannedRobotEvent e) {
         // demonstrate feature of debugging properties on RobotDialog
         setDebugProperty("lastScannedRobot", e.getName() + " at " + e.getBearing() + " degrees at time " + getTime());
@@ -61,23 +63,18 @@ public class ThanosTank extends AdvancedRobot {
             gunTurnAmt = robocode.util.Utils.normalRelativeAngle(absBearing- getGunHeadingRadians()+latVel/22);//amount to turn our gun, lead just a little bit
             setTurnGunRightRadians(gunTurnAmt); //turn our gun
             setTurnRightRadians(robocode.util.Utils.normalRelativeAngle(absBearing-getHeadingRadians()+latVel/getVelocity()));//drive towards the enemies predicted future location
-            setAhead((e.getDistance() - 140)*moveDirection);//move forward
+            setAhead((e.getDistance() - 140)*moveDirection*dir);//move forward
             setFire(3);//fire
         }
         else{//if we are close enough...
             gunTurnAmt = robocode.util.Utils.normalRelativeAngle(absBearing- getGunHeadingRadians()+latVel/15);//amount to turn our gun, lead just a little bit
             setTurnGunRightRadians(gunTurnAmt);//turn our gun
             setTurnLeft(-90-e.getBearing()); //turn perpendicular to the enemy
-            setAhead((e.getDistance() - 140)*moveDirection);//move forward
+            setAhead((e.getDistance() - 140)*moveDirection*dir);//move forward
             setFire(3);//fire
         }
     }
 
-    /**
-     * We were hit!  Turn perpendicular to the bullet,
-     * so our seesaw might avoid a future shot.
-     * In addition, draw orange circles where we were hit.
-     */
     public void onHitByBullet(HitByBulletEvent e) {
         // demonstrate feature of debugging properties on RobotDialog
         setDebugProperty("lastHitBy", e.getName() + " with power of bullet " + e.getPower() + " at time " + getTime());
