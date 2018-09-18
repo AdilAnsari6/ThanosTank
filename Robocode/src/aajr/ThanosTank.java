@@ -51,6 +51,11 @@ public class ThanosTank extends AdvancedRobot {
 
     public void onScannedRobot(ScannedRobotEvent e) {
         // demonstrate feature of debugging properties on RobotDialog
+        setBodyColor(new Color((float)Math.random(),(float)Math.random(),(float)Math.random()));
+        setGunColor(new Color((float)Math.random(),(float)Math.random(),(float)Math.random()));
+        setRadarColor(new Color((float)Math.random(),(float)Math.random(),(float)Math.random()));
+        setBulletColor(new Color((float)Math.random(),(float)Math.random(),(float)Math.random()));
+        setScanColor(new Color((float)Math.random(),(float)Math.random(),(float)Math.random()));
         setDebugProperty("lastScannedRobot", e.getName() + " at " + e.getBearing() + " degrees at time " + getTime());
         double absBearing=e.getBearingRadians()+getHeadingRadians();//enemies absolute bearing
         double latVel=e.getVelocity() * Math.sin(e.getHeadingRadians() -absBearing);//enemies later velocity
