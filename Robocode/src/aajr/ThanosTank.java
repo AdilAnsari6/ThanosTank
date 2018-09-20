@@ -34,6 +34,7 @@ import java.awt.*;
 public class ThanosTank extends AdvancedRobot {
     int moveDirection = 10;
     int dir = 1;
+    int i = 0;
     /**
      * PaintingRobot's run method - Seesaw
      */
@@ -50,12 +51,18 @@ public class ThanosTank extends AdvancedRobot {
     }
 
     public void onScannedRobot(ScannedRobotEvent e) {
-        // demonstrate feature of debugging properties on RobotDialog
-        setBodyColor(new Color((float)Math.random(),(float)Math.random(),(float)Math.random()));
-        setGunColor(new Color((float)Math.random(),(float)Math.random(),(float)Math.random()));
-        setRadarColor(new Color((float)Math.random(),(float)Math.random(),(float)Math.random()));
-        setBulletColor(new Color((float)Math.random(),(float)Math.random(),(float)Math.random()));
-        setScanColor(new Color((float)Math.random(),(float)Math.random(),(float)Math.random()));
+
+        i += 7;
+        setBodyColor( Color.getHSBColor( i / 360.0f, 1.0f, 1.0f ) );
+        setGunColor( Color.getHSBColor( i / 360.0f, 1.0f, 1.0f ) );
+        setRadarColor( Color.getHSBColor( i / 360.0f, 1.0f, 1.0f ) );
+        setBulletColor( Color.getHSBColor( i / 360.0f, 1.0f, 1.0f ) );
+        setScanColor( Color.getHSBColor( i / 360.0f, 1.0f, 1.0f ) );
+        //setBodyColor(new Color((float)Math.random(),(float)Math.random(),(float)Math.random()));
+        //setGunColor(new Color((float)Math.random(),(float)Math.random(),(float)Math.random()));
+        //setRadarColor(new Color((float)Math.random(),(float)Math.random(),(float)Math.random()));
+        //setBulletColor(new Color((float)Math.random(),(float)Math.random(),(float)Math.random()));
+        //setScanColor(new Color((float)Math.random(),(float)Math.random(),(float)Math.random()));
         setDebugProperty("lastScannedRobot", e.getName() + " at " + e.getBearing() + " degrees at time " + getTime());
         double absBearing=e.getBearingRadians()+getHeadingRadians();//enemies absolute bearing
         double latVel=e.getVelocity() * Math.sin(e.getHeadingRadians() -absBearing);//enemies later velocity
