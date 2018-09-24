@@ -117,3 +117,33 @@ public class ThanosTank extends AdvancedRobot {
     }
 }
 
+public class WaveBullet {
+    private double startX, startY, startBearing, power;
+    private long fireTime;
+    private int direction;
+    private int[] returnSegment;
+
+    public WaveBullet(double x, double y, double bearing, double power,
+                      int direction, long time, int[] segment) {
+        startX = x;
+        startY = y;
+        startBearing = bearing;
+        this.power = power;
+        this.direction = direction;
+        fireTime = time;
+        returnSegment = segment;
+    }
+
+    public double getBulletSpeed()
+    {
+        return 20 - power * 3;
+    }
+
+    public double maxEscapeAngle()
+    {
+        return Math.asin(8 / getBulletSpeed());
+    }
+
+
+}
+
